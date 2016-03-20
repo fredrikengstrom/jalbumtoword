@@ -14,6 +14,7 @@ class MainClass {
         new ExcelBuilder("/Users/fredrik/callista/dev/jalbumtoword/testfiles/fillista.xls").eachLine([labels:true]) {
 //            new Person(name:"$firstname $lastname",
 //                    address:address, telephone:phone).save()
+            println "Med rubriknamn. tnamn: $Tempnamn , fil: $Fil , kommentar: $Kommentar"
             println "First column on row ${it.rowNum} = ${cell(0)}"
         }
 
