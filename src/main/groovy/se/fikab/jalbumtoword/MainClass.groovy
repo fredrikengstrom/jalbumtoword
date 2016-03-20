@@ -11,6 +11,12 @@ class MainClass {
     public static void main(String... args) {
         System.out.println("Hello my world!")
 
+        new ExcelBuilder("/Users/fredrik/callista/dev/jalbumtoword/testfiles/fillista.xls").eachLine([labels:true]) {
+//            new Person(name:"$firstname $lastname",
+//                    address:address, telephone:phone).save()
+            println "First column on row ${it.rowNum} = ${cell(0)}"
+        }
+
 
         def builders = [
                 new PdfDocumentBuilder(new File('example.pdf')),
