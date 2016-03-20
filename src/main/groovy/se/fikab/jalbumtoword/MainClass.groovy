@@ -11,27 +11,37 @@ import java.nio.file.Paths
 class MainClass {
 
     public static void main(String... args) {
-        System.out.println("Hello my world!")
+        def inputfileArg = args.find {
+            it.matches(".*.xls")
+        }
+        def inputfile = inputfileArg != null ? inputfileArg : "/Users/fredrik/callista/dev/jalbumtoword/testfiles/fillista.xls"
+
+        def generateWordDoc = args.any {
+            it.matches("-w")
+        }
+
+        def showHelp = args.any {
+            it.matches("-h")
+        }
+
+        if (showHelp) {
+            println("Give path to xls-file as argument. Use flag '-w' to generate word documents.")
+        }
 
         def datas = new ArrayList<ImageData>();
-
-        new ExcelBuilder("/Users/fredrik/callista/dev/jalbumtoword/testfiles/fillista.xls").eachLine([labels:true]) {
+        new ExcelBuilder(inputfile).eachLine([labels:true]) {
             datas.add(new ImageData(path:Fil, name:Tempnamn, number:it.rowNum, comment:Kommentar))
-            println "Med rubriknamn. tnamn: $Tempnamn , fil: $Fil , kommentar: $Kommentar"
+            println "Läst rad. tnamn: $Tempnamn , fil: $Fil , kommentar: $Kommentar"
         }
 
-        def builders = [
-                new PdfDocumentBuilder(new File('example.pdf')),
-                new WordDocumentBuilder(new File('example.docx')),
-        ]
-
-        builders.each { builder ->
-            createDocument(builder, datas)
-        }
+        def builder = generateWordDoc ? new WordDocumentBuilder(new File('example.docx')) : new PdfDocumentBuilder(new File('example.pdf'))
+        createDocument(builder, datas)
 
     }
 
     private static void createDocument(DocumentBuilder builder, List<ImageData> datas) {
+
+        def isPdfBuilder = builder instanceof PdfDocumentBuilder;
 
         builder.create {
             document(font: [family: 'Helvetica', size: 14.pt], margin: [top: 0.75.inches]) {
@@ -43,8 +53,12 @@ class MainClass {
                     def textComment = getTextComment(path)
                     def current = it
 
-                    paragraph(margin: [left: 1.inch]) {
-                        image(data: groovyImageData, width: 250.px, height: 125.px, name: current.name + current.number)
+                    paragraph(margin: [left: 0.inch]) {
+                        if (isPdfBuilder) {
+                            image(data: groovyImageData, width: 300.px, height: 300.px, name: current.name + current.number)
+                        } else {
+                            image(data: groovyImageData, name: current.name + current.number)
+                        }
                         lineBreak()
                         text "Namn: $current.name", font: [italic: true, size: 9.pt]
                         lineBreak()

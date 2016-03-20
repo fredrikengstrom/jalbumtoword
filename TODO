@@ -1,1 +1,3 @@
 * Lägg till support för xml-versioner av excel-filer.
+* Skapar idag ett sammansatt dokuemnt, se till att skapa de två varianterna som pappa bad om (bild + text i separata dokument)
+* Lägg till tid och datum i filnamnet vi generering.
