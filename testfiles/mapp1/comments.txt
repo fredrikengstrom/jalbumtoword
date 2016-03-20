@@ -1,0 +1,2 @@
+namn2=Det här är bild nr 2. Någon naturfärgat tyg. i mapp1.
+namn1=Det här är bild nr 1 tror jag. I mapp1.
