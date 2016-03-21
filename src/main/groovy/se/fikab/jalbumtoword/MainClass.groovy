@@ -30,8 +30,14 @@ class MainClass {
 
         def datas = new ArrayList<ImageData>();
         new ExcelBuilder(inputfile).eachLine([labels:true]) {
-            datas.add(new ImageData(path:Fil, name:Tempnamn, number:it.rowNum, comment:Kommentar))
             println "Läst rad. tnamn: $Tempnamn , fil: $Fil , kommentar: $Kommentar"
+            if (Tempnamn == null) {
+                println("Saknar namn. Rad ej tillagd.")
+            } else if (Fil == null) {
+                println("Saknar fil-sökväg. Rad ej tillagd.")
+            } else {
+                datas.add(new ImageData(path: Fil, name: Tempnamn, number: it.rowNum, comment: Kommentar))
+            }
         }
 
         def now = new Date()
