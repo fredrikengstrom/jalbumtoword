@@ -34,12 +34,24 @@ class MainClass {
             println "Läst rad. tnamn: $Tempnamn , fil: $Fil , kommentar: $Kommentar"
         }
 
-        def builder = generateWordDoc ? new WordDocumentBuilder(new File('example.docx')) : new PdfDocumentBuilder(new File('example.pdf'))
-        createDocument(builder, datas)
+        def now = new Date()
+        def nowString = now.format("yyyyMMdd-HHmmss")
 
+        def combinedBuilder = getBuilder(generateWordDoc, nowString + '-kombinerat')
+        createCombinedDocument(combinedBuilder, datas)
+
+        def photoBuilder = getBuilder(generateWordDoc, nowString + '-foton')
+        createPhotoDocument(photoBuilder, datas)
+
+        def textBuilder = getBuilder(generateWordDoc, nowString + '-texter')
+        createTextDocument(textBuilder, datas)
     }
 
-    private static void createDocument(DocumentBuilder builder, List<ImageData> datas) {
+    private static DocumentBuilder getBuilder(boolean generateWordDoc, String filename) {
+        generateWordDoc ? new WordDocumentBuilder(new File(filename + ".docx")) : new PdfDocumentBuilder(new File(filename + ".pdf"))
+    }
+
+    private static void createCombinedDocument(DocumentBuilder builder, List<ImageData> datas) {
 
         def isPdfBuilder = builder instanceof PdfDocumentBuilder;
 
@@ -70,6 +82,81 @@ class MainClass {
                         lineBreak()
                         text "Kommentar från JAlbum: $textComment", font: [italic: true, size: 9.pt]
                         pageBreak()
+                    }
+                }
+
+            }
+        }
+    }
+        private static void createPhotoDocument(DocumentBuilder builder, List<ImageData> datas) {
+
+        def isPdfBuilder = builder instanceof PdfDocumentBuilder;
+
+        builder.create {
+            document(font: [family: 'Helvetica', size: 14.pt], margin: [top: 0.75.inches]) {
+
+                datas.each {
+                    Path path = Paths.get(it.path).normalize();
+                    byte[] groovyImageData = Files.readAllBytes(path);
+
+//                    def textComment = getTextComment(path)
+                    def current = it
+
+                    paragraph(margin: [left: 0.inch]) {
+                        if (isPdfBuilder) {
+                            image(data: groovyImageData, width: 300.px, height: 300.px, name: current.name + current.number)
+                        } else {
+                            image(data: groovyImageData, name: current.name + current.number)
+                        }
+                        lineBreak()
+                        text "Namn: $current.name", font: [italic: true, size: 9.pt]
+//                        lineBreak()
+//                        text "Nummer: $current.number", font: [italic: true, size: 9.pt]
+//                        lineBreak()
+//                        text "Sökväg: $current.path", font: [italic: true, size: 9.pt]
+//                        lineBreak()
+//                        text "Kommentar: $current.comment", font: [italic: true, size: 9.pt]
+//                        lineBreak()
+//                        text "Kommentar från JAlbum: $textComment", font: [italic: true, size: 9.pt]
+                        pageBreak()
+                    }
+                }
+
+            }
+        }
+    }
+
+    private static void createTextDocument(DocumentBuilder builder, List<ImageData> datas) {
+
+//        def isPdfBuilder = builder instanceof PdfDocumentBuilder;
+
+        builder.create {
+            document(font: [family: 'Helvetica', size: 14.pt], margin: [top: 0.75.inches]) {
+
+                datas.each {
+                    Path path = Paths.get(it.path).normalize();
+//                    byte[] groovyImageData = Files.readAllBytes(path);
+
+                    def textComment = getTextComment(path)
+                    def current = it
+
+                    paragraph(margin: [left: 0.inch]) {
+//                        if (isPdfBuilder) {
+//                            image(data: groovyImageData, width: 300.px, height: 300.px, name: current.name + current.number)
+//                        } else {
+//                            image(data: groovyImageData, name: current.name + current.number)
+//                        }
+//                        lineBreak()
+                        text "Namn: $current.name", font: [italic: true, size: 9.pt]
+                        lineBreak()
+                        text "Nummer: $current.number", font: [italic: true, size: 9.pt]
+                        lineBreak()
+                        text "Sökväg: $current.path", font: [italic: true, size: 9.pt]
+                        lineBreak()
+                        text "Kommentar: $current.comment", font: [italic: true, size: 9.pt]
+                        lineBreak()
+                        text "Kommentar från JAlbum: $textComment", font: [italic: true, size: 9.pt]
+//                        pageBreak()
                     }
                 }
 
