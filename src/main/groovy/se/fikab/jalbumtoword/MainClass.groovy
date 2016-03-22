@@ -14,6 +14,7 @@ class MainClass {
         def inputfileArg = args.find {
             it.matches(".*.xls")
         }
+//        def inputfile = inputfileArg != null ? inputfileArg : "fillista.xls"
         def inputfile = inputfileArg != null ? inputfileArg : "/Users/fredrik/callista/dev/jalbumtoword/testfiles/fillista.xls"
 
         def generateWordDoc = args.any {
@@ -36,7 +37,7 @@ class MainClass {
             } else if (Fil == null) {
                 println("Saknar fil-sökväg. Rad ej tillagd.")
             } else {
-                datas.add(new ImageData(path: Fil, name: Tempnamn, number: it.rowNum, comment: Kommentar))
+                datas.add(new ImageData(path: Fil.replaceAll(/^\"|\"$/, ""), name: Tempnamn, number: it.rowNum, comment: Kommentar))
             }
         }
 
@@ -171,7 +172,7 @@ class MainClass {
     }
 
     private static String getTextComment(Path path) {
-        def commentsFilePath = Paths.get(path.parent.toString() + File.separator + "comments.txt")
+        def commentsFilePath = Paths.get(path.parent.toString() + File.separator + "comments.properties")
         def file = commentsFilePath.toFile()
         if (!file.exists()) {
             return "Ingen JAlbum kommentarsfil funnen för denna bild..."
