@@ -1,2 +1,3 @@
 * Lägg till support för xml-versioner av excel-filer.
 * JAlbum lägger till texten för nyrad. Se till att dessa tas bort och hanteras. Lägger till backslash. Om raden slutar med backslash så ska alltså även nästa rad läsas in.
+* Fixa out of memory-bug

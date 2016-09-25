@@ -20,3 +20,7 @@ dependencies {
     compile 'com.craigburke.document:pdf:0.4.15'
     compile 'org.apache.poi:poi:3.14'
 }
+
+startScripts{
+    defaultJvmOpts = ['-Xmx4g']
+}
